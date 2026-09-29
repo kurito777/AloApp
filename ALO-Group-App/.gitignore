@@ -1,0 +1,138 @@
+# Flutter/Dart
+
+.dart_tool/
+.packages
+.pub/
+build/
+
+# Flutter generated
+
+.flutter-plugins
+.flutter-plugins-dependencies
+.metadata
+
+# IDE
+
+.idea/
+.vscode/
+*.iml
+
+# macOS
+
+.DS_Store
+
+# Windows
+
+Thumbs.db
+
+# Logs
+
+*.log
+
+# Environment variables
+
+.env
+.env.local
+.env.production
+
+# Firebase
+
+google-services.json
+GoogleService-Info.plist
+firebase_options.dart
+
+# Android
+
+android/.gradle/
+android/app/debug/
+android/app/profile/
+android/app/release/
+
+# iOS
+
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+
+# Generated files
+
+lib/generated/
+*.g.dart
+*.freezed.dart
+
+# Coverage
+
+coverage/
+
+# Fastlane
+
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+
+# Keystore / signing
+
+*.jks
+*.keystore
+key.properties
+
+# Temporary files
+
+*.tmp
+*.temp
+
+# Local database
+
+*.db
+*.sqlite
+*.sqlite3
+
+# Crashlytics / debug
+
+crashlytics.properties
+
+# Cache
+
+.cache/
+
+# API secrets
+
+secrets/
+config/secrets.dart
+
+# Node (si usas tooling web o scripts)
+
+node_modules/
+
+# Figma exports / assets temporales
+
+design/temp/
+exports/
+
+# Generated APK/AAB
+
+*.apk
+*.aab
+
+# Uploads / evidencias locales
+
+uploads/
+temp_uploads/
+
+# Map cache
+
+map_cache/
+
+# Testing
+
+test_driver/screenshots/
+
+# Misc
+
+*.swp
+*.bak
+
+# Repomix output (mapa del repo para Claude)
+
+repomix-output.*
