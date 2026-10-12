@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Técnico - ALO Style</title>
+    <style>
+        /* =========================================
+           VARIABLES DE DISEÑO (ALO RENTAL STYLE)
+           ========================================= */
+        :root {
+            /* Colores Principales extraídos de las imágenes */
+            --alo-yellow: #FFCE00; /* Amarillo corporativo ALO */
+            --alo-dark-blue: #1A1C24; /* Azul oscuro/Casi negro de los fondos y footers */
+            --alo-red: #E3000F; /* Rojo del logo y detalles */
+            --alo-white: #FFFFFF;
+            --alo-light-bg: #F4F4F4; /* Fondo gris claro para contraste de tarjetas */
+            --text-dark: #333333;
+            --text-gray: #666666;
+            
+            /* Colores de Estado (Adaptados de tu código Flutter) */
+            --status-pending: #E3000F; /* Rojo */
+            --status-way: #FF8C00;     /* Naranja */
+            --status-done: #00A650;    /* Verde */
+        }
+
+        /* =========================================
+           RESET Y TIPOGRAFÍA
+           ========================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--alo-light-bg);
+            color: var(--text-dark);
+        }
+
+        /* =========================================
+           HEADER TIPO ALO RENTAL
+           ========================================= */
+        .top-bar {
+            background-color: var(--alo-dark-blue);
+            color: var(--alo-yellow);
+            padding: 5px 20px;
+            font-size: 11px;
+            font-weight: bold;
+            display: flex;
+            justify-content: flex-end;
+            gap: 20px;
+            letter-spacing: 1px;
+        }
+
+        .header {
+            background-color: var(--alo-white);
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            background-color: var(--alo-yellow);
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%); /* Efecto diagonal de la web */
+            width: 250px;
+        }
+
+        .logo-container h1 {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--alo-dark-blue);
+            margin: 0;
+            line-height: 1;
+        }
+
+        .logo-container h1 span {
+            color: var(--alo-red);
+        }
+
+        .page-title {
+            padding-left: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--alo-dark-blue);
+            text-transform: uppercase;
+        }
+
+        /* =========================================
+           CONTENEDOR PRINCIPAL Y TARJETAS
+           ========================================= */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .orders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+        }
+
+        /* Estilo de Tarjeta basado en los bloques "Actualidad ALO" */
+        .order-card {
+            background-color: var(--alo-white);
+            border-radius: 0; /* La web usa bordes rectos/duros, no redondeados */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+            border-bottom: 4px solid var(--alo-yellow);
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        /* Cabecera oscura de la tarjeta */
+        .card-header {
+            background-color: var(--alo-dark-blue);
+            color: var(--alo-white);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Punto de prioridad (Extraído de tu lógica Flutter) */
+        .priority-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex-grow: 1;
+        }
+
+        .client-name {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--alo-dark-blue);
+        }
+
+        .address-text {
+            color: var(--text-gray);
+            font-size: 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 5px;
+        }
+
+        .tech-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            background-color: #f9f9f9;
+            padding: 8px 12px;
+            border-left: 3px solid var(--alo-dark-blue);
+        }
+
+        /* Chips / Badges */
+        .chips-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .chip {
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .chip-status {
+            background-color: rgba(227, 0, 15, 0.1);
+            color: var(--status-pending);
+        }
+
+        .chip-priority {
+            background-color: rgba(26, 28, 36, 0.1);
+            color: var(--alo-dark-blue);
+        }
+
+        /* Botón de Acción basado en "COTIZAR AHORA" */
+        .btn-action {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--alo-yellow);
+            color: var(--alo-dark-blue);
+            text-align: center;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 14px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin-top: auto;
+        }
+
+        .btn-action:hover {
+            background-color: #E6B800;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Bar estilo ALO -->
+    <div class="top-bar">
+        <span>✆ +56 2 2965 0320</span>
+        <span>✆ +56 2 2965 0340</span>
+    </div>
+
+    <!-- Header Principal -->
+    <header class="header">
+        <div class="logo-container">
+            <h1>ALO <span>RENTAL</span></h1>
+        </div>
+        <div class="page-title">
+            Dashboard Técnico
+        </div>
+    </header>
+
+    <!-- Contenido Principal (Simulación del estado 'DashboardLoaded') -->
+    <main class="dashboard-container">
+        <div class="orders-grid">
+            
+            <!-- TARJETA 1 (Ejemplo Alta / Pendiente) -->
+            <article class="order-card">
+                <div class="card-header">
+                    <h2>
+                        <span class="priority-dot" style="background-color: var(--alo-red);"></span>
+                        ORD-00124
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="client-name">Constructora ALFA S.A.</div>
+                    <div class="address-text">📍 Av. Pdte. Eduardo Frei Montalva 9800, Quilicura</div>
+                    <div class="tech-text">Técnico: Juan Pérez</div>
+                    
+                    <div class="chips-container">
+                        <span class="chip chip-status" style="color: var(--alo-red); background-color: rgba(227,0,15,0.1);">PENDIENTE</span>
+                        <span class="chip chip-priority" style="color: var(--alo-red); background-color: rgba(227,0,15,0.1);">ALTA</span>
+                    </div>
+                </div>
+                <button class="btn-action">Ver Detalle</button>
+            </article>
+
+            <!-- TARJETA 2 (Ejemplo Media / En Camino) -->
+            <article class="order-card">
+                <div class="card-header">
+                    <h2>
+                        <span class="priority-dot" style="background-color: var(--status-way);"></span>
+                        ORD-00125
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="client-name">Minería del Norte Ltda.</div>
+                    <div class="address-text">📍 Ruta 5 Norte Km 120, Antofagasta</div>
+                    <div class="tech-text">Técnico: Carlos Soto</div>
+                    
+                    <div class="chips-container">
+                        <span class="chip chip-status" style="color: var(--status-way); background-color: rgba(255,140,0,0.1);">EN CAMINO</span>
+                        <span class="chip chip-priority" style="color: var(--status-way); background-color: rgba(255,140,0,0.1);">MEDIA</span>
+                    </div>
+                </div>
+                <button class="btn-action">Ver Detalle</button>
+            </article>
+
+            <!-- TARJETA 3 (Ejemplo Baja / Finalizada) -->
+            <article class="order-card">
+                <div class="card-header">
+                    <h2>
+                        <span class="priority-dot" style="background-color: var(--text-gray);"></span>
+                        ORD-00126
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="client-name">Logística Central</div>
+                    <div class="address-text">📍 Parque Industrial, Bodega 4, Santiago</div>
+                    <div class="tech-text">Técnico: Miguel Rodríguez</div>
+                    
+                    <div class="chips-container">
+                        <span class="chip chip-status" style="color: var(--status-done); background-color: rgba(0,166,80,0.1);">FINALIZADA</span>
+                        <span class="chip chip-priority" style="color: var(--text-gray); background-color: rgba(102,102,102,0.1);">BAJA</span>
+                    </div>
+                </div>
+                <button class="btn-action">Ver Detalle</button>
+            </article>
+
+        </div>
+    </main>
+
+</body>
+</html>

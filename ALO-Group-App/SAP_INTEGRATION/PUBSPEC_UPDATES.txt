@@ -1,0 +1,164 @@
+═══════════════════════════════════════════════════════════════════════════
+PUBSPEC_UPDATES.txt — Cambios necesarios en pubspec.yaml
+ALO Group Field App — Integración SAP B1
+═══════════════════════════════════════════════════════════════════════════
+
+ARCHIVO: alo_field_app/pubspec.yaml
+
+───────────────────────────────────────────────────────────────────────────
+1. DEPENDENCIAS (sección: dependencies)
+───────────────────────────────────────────────────────────────────────────
+
+Las siguientes dependencias YA ESTÁN en el proyecto. Solo verificar versiones:
+
+  flutter_bloc: ^9.1.1       # BLoC state management
+  equatable: ^2.0.8          # Comparación de eventos/estados
+  dio: ^5.9.2                # HTTP client para SAP
+  flutter_dotenv: ^6.0.1     # Variables de entorno (.env)
+  get_it: ^9.2.1             # Service locator / DI
+
+Si alguna no está, agregar en la sección dependencies:
+
+  dependencies:
+    flutter:
+      sdk: flutter
+    flutter_bloc: ^9.1.1
+    equatable: ^2.0.8
+    dio: ^5.9.2
+    flutter_dotenv: ^6.0.1
+    get_it: ^9.2.1
+    # ... resto de dependencias existentes
+
+───────────────────────────────────────────────────────────────────────────
+2. ASSETS (sección: flutter > assets)
+───────────────────────────────────────────────────────────────────────────
+
+Verificar que los archivos .env estén declarados como assets:
+
+  flutter:
+    assets:
+      - .env.dev
+      - .env.prod     # si usas entorno de producción
+
+NOTA: Los archivos .env deben estar en la raíz de alo_field_app/
+(al mismo nivel que pubspec.yaml), NO en lib/.
+
+Estructura esperada:
+  alo_field_app/
+  ├── pubspec.yaml
+  ├── .env.dev        ← aquí
+  ├── .env.prod       ← aquí (opcional)
+  └── lib/
+      └── ...
+
+───────────────────────────────────────────────────────────────────────────
+3. ANDROID — android/app/build.gradle.kts
+───────────────────────────────────────────────────────────────────────────
+
+Si necesitas cambiar el package ID de la app:
+
+  android {
+      namespace = "com.alogroup.fieldapp"         // ← cambiar si aplica
+      defaultConfig {
+          applicationId = "com.alogroup.fieldapp" // ← cambiar si aplica
+          minSdk = 21       // mínimo para flutter_dotenv
+          targetSdk = 35
+          versionCode = 1
+          versionName = "1.0.0"
+      }
+  }
+
+Agregar permiso de internet en android/app/src/main/AndroidManifest.xml:
+
+  <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+      <uses-permission android:name="android.permission.INTERNET"/>
+      <!-- Para GPS en fases futuras: -->
+      <!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/> -->
+      <application ...>
+  </manifest>
+
+───────────────────────────────────────────────────────────────────────────
+4. iOS — ios/Runner/Info.plist
+───────────────────────────────────────────────────────────────────────────
+
+Agregar descripción de uso de red (requerido para App Store):
+
+  <key>NSAppTransportSecurity</key>
+  <dict>
+      <!-- Para SAP con certificado auto-firmado en desarrollo: -->
+      <key>NSAllowsArbitraryLoads</key>
+      <true/>
+      <!-- En producción, reemplazar con: -->
+      <!--
+      <key>NSExceptionDomains</key>
+      <dict>
+          <key>sap.alo-group.com</key>
+          <dict>
+              <key>NSExceptionAllowsInsecureHTTPLoads</key>
+              <false/>
+              <key>NSIncludesSubdomains</key>
+              <true/>
+          </dict>
+      </dict>
+      -->
+  </dict>
+
+  <!-- Para GPS en fases futuras: -->
+  <!-- <key>NSLocationWhenInUseUsageDescription</key> -->
+  <!-- <string>Necesario para registrar tu ubicación al llegar al sitio.</string> -->
+
+───────────────────────────────────────────────────────────────────────────
+5. PUBSPEC.YAML COMPLETO — solo la sección relevante
+───────────────────────────────────────────────────────────────────────────
+
+# Sección de ejemplo para referencia:
+
+name: alo_field_app
+description: ALO Group Field App — Gestión de Órdenes de Taller
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.11.5"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # State management
+  flutter_bloc: ^9.1.1
+  equatable: ^2.0.8
+  # Networking
+  dio: ^5.9.2
+  connectivity_plus: ^7.1.1
+  # Environment / Config
+  flutter_dotenv: ^6.0.1
+  # Dependency Injection
+  get_it: ^9.2.1
+  # Storage
+  flutter_secure_storage: ^10.2.0
+  # Navigation
+  go_router: ^17.2.3
+
+flutter:
+  uses-material-design: true
+  assets:
+    - .env.dev
+    - .env.prod
+
+───────────────────────────────────────────────────────────────────────────
+6. DESPUÉS DE EDITAR pubspec.yaml
+───────────────────────────────────────────────────────────────────────────
+
+Ejecutar siempre:
+
+  flutter pub get
+
+Verificar que no hay errores:
+
+  flutter analyze
+
+Si hay conflictos de versiones:
+
+  flutter pub upgrade --major-versions
+
+═══════════════════════════════════════════════════════════════════════════
