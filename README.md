@@ -58,11 +58,11 @@ Desde PowerShell:
 
 cd C:\Projects
 git clone <URL_DEL_REPOSITORIO>
-cd ALO-Group-App\alo_field_app
+cd AloApp\alo_field_app
 
 Si el proyecto ya está clonado:
 
-cd C:\Projects\ALO-Group-App\alo_field_app
+cd C:\Projects\AloApp\alo_field_app
 Instalar dependencias
 
 Ejecutar:
@@ -82,7 +82,8 @@ Para desarrollo local se debe configurar .env.dev.
 
 Ejemplo:
 
-API_URL=https://dev-api.com
+# Ver alo_field_app/.env.example para las 10 variables requeridas
+# (API_BASE_URL, SAP_BASE_URL, SAP_SERVICE_USER, GOOGLE_MAPS_API_KEY, SAP_WRITE_ENABLED, etc.)
 
 Los valores reales de conexión deben ser proporcionados por el ambiente correspondiente. No se deben subir credenciales, tokens o contraseñas al repositorio.
 

@@ -1,0 +1,26 @@
+﻿00:00 +0: loading C:/Users/ian/Documents/AloApp/alo_field_app/test/config/sap_config_test.dart
+00:00 +0: C:/Users/ian/Documents/AloApp/alo_field_app/test/config/sap_config_test.dart: translateOmState (catálogo real VID_MTOM) P/L/C/X
+00:00 +1: C:/Users/ian/Documents/AloApp/alo_field_app/test/config/sap_config_test.dart: translateOmState (catálogo real VID_MTOM) desconocido → null (cae a Status O/C en la UI)
+00:00 +2: C:/Users/ian/Documents/AloApp/alo_field_app/test/config/sap_config_test.dart: isOmEditableState P y L editables
+00:00 +3: C:/Users/ian/Documents/AloApp/alo_field_app/test/config/sap_config_test.dart: isOmEditableState C y X no editables
+00:00 +4: C:/Users/ian/Documents/AloApp/alo_field_app/test/config/sap_config_test.dart: isOmEditableState null/vacío se trata como editable
+00:00 +5: C:/Users/ian/Documents/AloApp/alo_field_app/test/config/sap_config_test.dart: allowlist de escritura incluye los UDO esperados
+00:00 +6: C:/Users/ian/Documents/AloApp/alo_field_app/test/config/sap_config_test.dart: translateState / stateToSapCode (ciclo OT) ida y vuelta
+00:00 +7: C:/Users/ian/Documents/AloApp/alo_field_app/test/models/order_model_test.dart: OrderModel.fromJson (VID_MTOM) parsea identificadores y estado
+00:00 +8: C:/Users/ian/Documents/AloApp/alo_field_app/test/models/order_model_test.dart: OrderModel.fromJson (VID_MTOM) displayStatus usa el catálogo real de la OM
+00:00 +9: C:/Users/ian/Documents/AloApp/alo_field_app/test/models/order_model_test.dart: OrderModel.fromJson (VID_MTOM) isEditable es true para Liberada
+00:00 +10: C:/Users/ian/Documents/AloApp/alo_field_app/test/models/order_model_test.dart: OrderModel.fromJson (VID_MTOM) parsea tareas de VID_MTOMTACollection
+00:00 +11: C:/Users/ian/Documents/AloApp/alo_field_app/test/models/order_model_test.dart: OrderModel.fromJson (VID_MTOM) cuenta pendientes (N y P) y terminadas (T)
+00:00 +12: C:/Users/ian/Documents/AloApp/alo_field_app/test/models/order_model_test.dart: OrderModel.fromJson (VID_MTOM) visibleMaterials excluye la línea vacía
+00:00 +13: C:/Users/ian/Documents/AloApp/alo_field_app/test/models/order_model_test.dart: OrderModel.isEditable Cerrada (C) no editable
+00:00 +14: C:/Users/ian/Documents/AloApp/alo_field_app/test/models/order_model_test.dart: OrderModel.isEditable Cancelada (X) no editable
+00:00 +15: C:/Users/ian/Documents/AloApp/alo_field_app/test/models/order_model_test.dart: OrderModel.isEditable null/desconocido editable
+00:00 +16: C:/Users/ian/Documents/AloApp/alo_field_app/test/models/order_model_test.dart: OrderTask isPending para N y P, no para T
+00:00 +17: C:/Users/ian/Documents/AloApp/alo_field_app/test/models/order_model_test.dart: OrderTask statusLabel
+00:00 +18: C:/Users/ian/Documents/AloApp/alo_field_app/test/models/order_model_test.dart: OrderTask displayName cae al código o al lineId
+00:00 +19: C:/Users/ian/Documents/AloApp/alo_field_app/test/models/started_activity_test.dart: StartedActivity isOpen mientras no esté finalizada
+00:00 +20: C:/Users/ian/Documents/AloApp/alo_field_app/test/models/started_activity_test.dart: StartedActivity displayId y statusLabel
+00:00 +21: C:/Users/ian/Documents/AloApp/alo_field_app/test/models/started_activity_test.dart: StartedActivity copyWith no muta el original
+00:00 +22: C:/Users/ian/Documents/AloApp/alo_field_app/test/models/started_activity_test.dart: StartedActivity toJson/fromJson roundtrip con tareas y materiales
+00:00 +23: All tests passed!
+
