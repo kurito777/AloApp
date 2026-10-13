@@ -348,12 +348,12 @@ Verificación:
 Verificar:
 1. SAP_SERVICE_USER y SAP_SERVICE_PASSWORD en .env.dev
 2. Usuario tiene permisos en SAP B1
-3. CompanyDB es correcto (ZTEST_AR_TRIBUTARIO para testing)
+3. CompanyDB es correcto (NOMBRE_COMPANY_DB para testing)
 
 Test manual:
 curl -k -X POST http://localhost:8080/b1s/v1/Login \
   -H "Content-Type: application/json" \
-  -d '{"CompanyDB":"ZTEST_AR_TRIBUTARIO","UserName":"INDACC02","Password":"TestIC2024","Language":25}'
+  -d '{"CompanyDB":"NOMBRE_COMPANY_DB","UserName":"usuario_servicio","Password":"REEMPLAZAR_PASSWORD","Language":25}'
 ```
 
 ---

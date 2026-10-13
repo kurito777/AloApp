@@ -46,9 +46,9 @@ Crear archivo `.env.dev` en la raíz del proyecto:
 ```env
 # SAP B1 Service Layer
 SAP_BASE_URL=http://localhost:8080/b1s/v1
-SAP_COMPANY=ZTEST_AR_TRIBUTARIO
-SAP_SERVICE_USER=INDACC02
-SAP_SERVICE_PASSWORD=TestIC2024
+SAP_COMPANY=NOMBRE_COMPANY_DB
+SAP_SERVICE_USER=usuario_servicio
+SAP_SERVICE_PASSWORD=REEMPLAZAR_PASSWORD
 
 # Entorno
 ENVIRONMENT=development

@@ -6,9 +6,9 @@ Future<void> main() async {
   final request = await client.postUrl(Uri.parse('http://localhost:8080/b1s/v1/Login'));
   request.headers.set('Content-Type', 'application/json');
   request.write(jsonEncode({
-    'CompanyDB': 'ZTEST_AR_TRIBUTARIO',
-    'UserName': 'INDACC02',
-    'Password': 'TestIC2024',
+    'CompanyDB': 'NOMBRE_COMPANY_DB',
+    'UserName': 'usuario_servicio',
+    'Password': 'REEMPLAZAR_PASSWORD',
     'Language': 25,
   }));
   final response = await request.close();
