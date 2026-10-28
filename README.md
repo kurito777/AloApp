@@ -5,22 +5,20 @@ Metodologia: Cascada
 
 
 app movil para tecnicos, contralando operacion y trazabilidad de estas.
-1. Tecnologías utilizadas
-Frontend / Aplicación
-Flutter 3.44.0 — Framework principal para el desarrollo multiplataforma.
-Dart — Lenguaje de programación utilizado por Flutter.
-Flutter Web — Utilizado para ejecutar y probar la aplicación desde navegador.
-Android — Plataforma objetivo para la aplicación móvil de técnicos.
-Windows / Web — Utilizados como entornos adicionales de desarrollo y pruebas.
-Gestión de estado
-flutter_bloc — Implementación del patrón BLoC para manejar el estado de la aplicación.
-equatable — Comparación de objetos y estados dentro de los BLoC.
-Inyección de dependencias
-get_it — Service Locator utilizado para centralizar y administrar las dependencias de la aplicación.
-Comunicación con APIs
-Dio — Cliente HTTP para comunicación con servicios/API externos.
-Configuración de ambientes
-flutter_dotenv — Manejo de variables de configuración mediante archivos .env.
+## Tecnologías utilizadas
+
+| Categoría | Tecnología | Descripción |
+|---|---|---|
+| Frontend / Aplicación | Flutter 3.44.0 | Framework principal para el desarrollo multiplataforma |
+| Frontend / Aplicación | Dart | Lenguaje de programación utilizado por Flutter |
+| Frontend / Aplicación | Flutter Web | Utilizado para ejecutar y probar la aplicación desde navegador |
+| Frontend / Aplicación | Android | Plataforma objetivo para la aplicación móvil de técnicos |
+| Frontend / Aplicación | Windows / Web | Entornos adicionales de desarrollo y pruebas |
+| Gestión de estado | flutter_bloc | Implementación del patrón BLoC para manejar el estado de la aplicación |
+| Gestión de estado | equatable | Comparación de objetos y estados dentro de los BLoC |
+| Inyección de dependencias | get_it | Service Locator utilizado para centralizar y administrar las dependencias de la aplicación |
+| Comunicación con APIs | Dio | Cliente HTTP para comunicación con servicios/API externos |
+| Configuración de ambientes | flutter_dotenv | Manejo de variables de configuración mediante archivos `.env` |
 
 Se contemplan actualmente:
 
