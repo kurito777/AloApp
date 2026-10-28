@@ -5,7 +5,7 @@ Integrantes: Ian Ampuero, Kevin Peredo ## Integrantes
 |---|---|
 | Kevin Peredo | Análisis, aseguramiento de calidad (QA), documentación de requisitos y pruebas funcionales |
 | Ian Ampuero | Desarrollo y arquitectura |
-Metodologia: Cascada
+  Metodologia: Cascada
 
 
 app movil para tecnicos, contralando operacion y trazabilidad de estas.
