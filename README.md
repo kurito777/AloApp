@@ -1,14 +1,16 @@
 # AloApp
-Integrantes: Ian Ampuero, Kevin Peredo ## Integrantes
+
+app movil para tecnicos, contralando operacion y trazabilidad de estas.
+
+**Metodología:** Cascada
+
+## Integrantes
 
 | Integrante | Rol |
 |---|---|
 | Kevin Peredo | Análisis, aseguramiento de calidad (QA), documentación de requisitos y pruebas funcionales |
 | Ian Ampuero | Desarrollo y arquitectura |
-  Metodologia: Cascada
 
-
-app movil para tecnicos, contralando operacion y trazabilidad de estas.
 ## Tecnologías utilizadas
 
 | Categoría | Tecnología | Descripción |
