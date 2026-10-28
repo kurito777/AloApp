@@ -1,6 +1,10 @@
 # AloApp
-Integrantes: Ian Ampuero, Kevin Peredo 
+Integrantes: Ian Ampuero, Kevin Peredo ## Integrantes
 
+| Integrante | Rol |
+|---|---|
+| Kevin Peredo | Análisis, aseguramiento de calidad (QA), documentación de requisitos y pruebas funcionales |
+| Ian Ampuero | Desarrollo y arquitectura |
 Metodologia: Cascada
 
 
