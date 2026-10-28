@@ -1,4 +1,5 @@
 # AloApp
+Integrantes: Ian Ampuero, Kevin Peredo
 app movil para tecnicos, contralando operacion y trazabilidad de estas.
 1. Tecnologías utilizadas
 Frontend / Aplicación
