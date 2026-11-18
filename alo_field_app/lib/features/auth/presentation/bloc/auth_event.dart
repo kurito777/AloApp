@@ -20,6 +20,21 @@ class LoginRequested extends AuthEvent {
   List<Object?> get props => [email];
 }
 
+/// Verifica el código OTP ingresado por el técnico.
+class VerifyOtpRequested extends AuthEvent {
+  final String code;
+
+  const VerifyOtpRequested(this.code);
+
+  @override
+  List<Object?> get props => [code];
+}
+
+/// Reenvía un nuevo código OTP al correo/Sheet.
+class ResendOtpRequested extends AuthEvent {
+  const ResendOtpRequested();
+}
+
 /// Cierra la sesión del técnico (limpia identidad y storage seguro).
 class LogoutRequested extends AuthEvent {
   const LogoutRequested();

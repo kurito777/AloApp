@@ -326,12 +326,62 @@ class _OmDetailPageState extends State<OmDetailPage> {
             Text(label,
                 style: TextStyle(
                     fontSize: 12, color: color, fontWeight: FontWeight.w600)),
-            if (_editable)
+            if (_editable) ...[
               const Icon(Icons.expand_more, size: 16, color: Colors.grey),
+              IconButton(
+                visualDensity: VisualDensity.compact,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                icon: const Icon(Icons.delete_outline,
+                    size: 18, color: Color(0xFFE3000F)),
+                onPressed: _busy ? null : () => _deleteTask(t),
+              ),
+            ],
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _deleteTask(OrderTask t) async {
+    if (t.lineId == null) return;
+    if (!await _confirm('¿Eliminar la tarea "${t.displayName}"?')) return;
+    await _write(
+      () => _repo.deleteOmTask(widget.docEntry, t.lineId!),
+      'Tarea eliminada',
+    );
+  }
+
+  Future<void> _deleteMaterial(OrderDetailLine m) async {
+    if (m.lineId == null) return;
+    final name = m.itemDescription ?? m.itemCode ?? 'material';
+    if (!await _confirm('¿Eliminar "$name"?')) return;
+    await _write(
+      () => _repo.deleteOmMaterial(widget.docEntry, m.lineId!),
+      'Material eliminado',
+    );
+  }
+
+  Future<bool> _confirm(String msg) async {
+    final r = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        content: Text(msg),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancelar')),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFE3000F),
+                foregroundColor: Colors.white),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+    return r ?? false;
   }
 
   Future<void> _pickEstado(OrderTask t) async {
@@ -418,6 +468,15 @@ class _OmDetailPageState extends State<OmDetailPage> {
                         Text('x${m.quantity?.toStringAsFixed(0) ?? '1'}',
                             style: const TextStyle(
                                 fontSize: 12, color: Colors.grey)),
+                        if (_editable)
+                          IconButton(
+                            visualDensity: VisualDensity.compact,
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            icon: const Icon(Icons.delete_outline,
+                                size: 18, color: Color(0xFFE3000F)),
+                            onPressed: _busy ? null : () => _deleteMaterial(m),
+                          ),
                       ],
                     ),
                   )),
@@ -429,31 +488,52 @@ class _OmDetailPageState extends State<OmDetailPage> {
 
   // ── Diálogos ────────────────────────────────────────────────────────────────
 
+  /// Valida: no vacío, ≥3 caracteres y al menos una letra o dígito.
+  static String? _validateText(String v) {
+    final t = v.trim();
+    if (t.isEmpty) return 'Ingresa una descripción.';
+    if (t.length < 3) return 'Mínimo 3 caracteres.';
+    if (!RegExp(r'[A-Za-zÀ-ÿ0-9]').hasMatch(t)) {
+      return 'Debe contener letras o números.';
+    }
+    return null;
+  }
+
   Future<String?> _promptText({required String title, required String hint}) {
     final ctrl = TextEditingController();
     return showDialog<String>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(title),
-        content: TextField(
-          controller: ctrl,
-          autofocus: true,
-          maxLines: 2,
-          decoration:
-              InputDecoration(hintText: hint, border: const OutlineInputBorder()),
-        ),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancelar')),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFFCE00),
-                foregroundColor: const Color(0xFF1A1C24)),
-            onPressed: () => Navigator.pop(ctx, ctrl.text.trim()),
-            child: const Text('Agregar'),
-          ),
-        ],
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setLocal) {
+          final error = _validateText(ctrl.text);
+          return AlertDialog(
+            title: Text(title),
+            content: TextField(
+              controller: ctrl,
+              autofocus: true,
+              maxLines: 2,
+              onChanged: (_) => setLocal(() {}),
+              decoration: InputDecoration(
+                hintText: hint,
+                border: const OutlineInputBorder(),
+                errorText: ctrl.text.isEmpty ? null : error,
+              ),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text('Cancelar')),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFFCE00),
+                    foregroundColor: const Color(0xFF1A1C24)),
+                onPressed:
+                    error != null ? null : () => Navigator.pop(ctx, ctrl.text.trim()),
+                child: const Text('Agregar'),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
