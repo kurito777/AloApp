@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
+import 'otp_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,6 +16,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
+  bool _otpOpen = false;
 
   @override
   void dispose() {
@@ -33,9 +35,21 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: const Color(0xFF1A1C24),
       body: BlocConsumer<AuthBloc, AuthState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state is AuthAuthenticated) {
             context.go('/dashboard');
+          }
+
+          // Correo válido → abre la pantalla de código (una sola vez).
+          if (state is AuthOtpSent && !_otpOpen) {
+            _otpOpen = true;
+            await Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => BlocProvider.value(
+                value: context.read<AuthBloc>(),
+                child: OtpPage(email: state.email),
+              ),
+            ));
+            _otpOpen = false;
           }
 
           if (state is AuthNotRegistered) {
@@ -63,119 +77,98 @@ class _LoginPageState extends State<LoginPage> {
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(24),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 400),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(32),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(
-                          Icons.engineering,
-                          size: 90,
+                child: Container(
+                  width: 400,
+                  padding: const EdgeInsets.all(32),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.engineering,
+                        size: 90,
+                        color: Color(0xFFFFCE00),
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'ALO Field',
+                        style: TextStyle(
+                          fontSize: 34,
+                          fontWeight: FontWeight.bold,
                           color: Color(0xFFFFCE00),
                         ),
-                        const SizedBox(height: 20),
-                        const Text(
-                          'ALO Field',
-                          style: TextStyle(
-                            fontSize: 34,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFFFFCE00),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Gestión Técnica en Terreno',
+                        style: TextStyle(
+                          color: Color(0xFFCCCCCC),
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+                      TextField(
+                        controller: emailController,
+                        enabled: state is! AuthLoading,
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.done,
+                        autofillHints: const [AutofillHints.email],
+                        onSubmitted: (_) =>
+                            state is AuthLoading ? null : _submit(),
+                        decoration: InputDecoration(
+                          labelText: 'Correo corporativo',
+                          hintText: 'usuario@alo-group.com',
+                          prefixIcon: const Icon(Icons.email),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          'Gestión Técnica en Terreno',
-                          style: TextStyle(
-                            color: Color(0xFF6B7280),
-                            fontSize: 16,
-                          ),
-                        ),
-                        const SizedBox(height: 40),
-                        TextField(
-                          controller: emailController,
-                          enabled: state is! AuthLoading,
-                          keyboardType: TextInputType.emailAddress,
-                          textInputAction: TextInputAction.done,
-                          autofillHints: const [AutofillHints.email],
-                          cursorColor: const Color(0xFF1A1C24),
-                          onSubmitted: (_) =>
-                              state is AuthLoading ? null : _submit(),
-                          decoration: InputDecoration(
-                            labelText: 'Correo corporativo',
-                            floatingLabelStyle: const TextStyle(
-                              color: Color(0xFF1A1C24),
-                              fontWeight: FontWeight.w600,
-                            ),
-                            hintText: 'usuario@alo-group.com',
-                            prefixIcon: const Icon(Icons.email),
-                            border: OutlineInputBorder(
+                      ),
+                      const SizedBox(height: 30),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 55,
+                        child: ElevatedButton(
+                          onPressed: state is AuthLoading ? null : _submit,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFFCE00),
+                            foregroundColor: const Color(0xFF1A1C24),
+                            shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(14),
-                              borderSide: const BorderSide(
-                                color: Color(0xFFBDBDBD),
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(14),
-                              borderSide: const BorderSide(
-                                color: Color(0xFFFFCE00),
-                                width: 2,
-                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 30),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 55,
-                          child: ElevatedButton(
-                            onPressed: state is AuthLoading ? null : _submit,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFFFCE00),
-                              foregroundColor: const Color(0xFF1A1C24),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                            ),
-                            child: state is AuthLoading
-                                ? const CircularProgressIndicator(
+                          child: state is AuthLoading
+                              ? const CircularProgressIndicator(
+                                  color: Color(0xFF1A1C24),
+                                )
+                              : const Text(
+                                  'Ingresar',
+                                  style: TextStyle(
+                                    fontSize: 18,
                                     color: Color(0xFF1A1C24),
-                                  )
-                                : const Text(
-                                    'Ingresar',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      color: Color(0xFF1A1C24),
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    fontWeight: FontWeight.bold,
                                   ),
-                          ),
+                                ),
                         ),
-                        const SizedBox(height: 20),
-                        const Text(
-                          'Solo usuarios @alo-group.com',
-                          style: TextStyle(
-                            color: Colors.grey,
-                          ),
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Solo usuarios @alo-group.com',
+                        style: TextStyle(
+                          color: Colors.grey,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),

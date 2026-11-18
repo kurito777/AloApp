@@ -269,6 +269,28 @@ class DashboardService {
     });
   }
 
+  /// Elimina una tarea de la OM. No existe borrado duro de líneas de UDO vía
+  /// Service Layer (el PATCH mergea por LineId), así que se blanquea la línea;
+  /// la UI la oculta (líneas sin nombre/código no se muestran).
+  Future<void> deleteOmTask(int docEntry, int lineId) async {
+    SapConfig.assertWritable(SapConfig.udoMtom);
+    await _patchMtom(docEntry, {
+      'VID_MTOMTACollection': [
+        {'LineId': lineId, 'U_Name': '', 'U_Code': '', 'U_Estado': ''},
+      ],
+    });
+  }
+
+  /// Elimina un material de la OM (soft-delete: blanquea la línea).
+  Future<void> deleteOmMaterial(int docEntry, int lineId) async {
+    SapConfig.assertWritable(SapConfig.udoMtom);
+    await _patchMtom(docEntry, {
+      'VID_MTOMMACollection': [
+        {'LineId': lineId, 'U_ItemName': '', 'U_ItemCode': '', 'U_Cantidad': 0},
+      ],
+    });
+  }
+
   Future<void> _patchMtom(int docEntry, Map<String, dynamic> payload) async {
     dev.log('[DashboardService] _patchMtom docEntry=$docEntry payload=$payload');
     await _executeWithRetry(() async {

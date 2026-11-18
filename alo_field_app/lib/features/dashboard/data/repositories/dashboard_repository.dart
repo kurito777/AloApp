@@ -185,6 +185,14 @@ class DashboardRepository {
         ),
       );
 
+  /// Elimina una tarea de la OM (soft-delete en SAP).
+  Future<void> deleteOmTask(int docEntry, int lineId) =>
+      _patchSafe(docEntry, () => _service.deleteOmTask(docEntry, lineId));
+
+  /// Elimina un material de la OM (soft-delete en SAP).
+  Future<void> deleteOmMaterial(int docEntry, int lineId) =>
+      _patchSafe(docEntry, () => _service.deleteOmMaterial(docEntry, lineId));
+
   // ── Helper privado ─────────────────────────────────────────────────────────
 
   Future<void> _patchSafe(int docEntry, Future<void> Function() action) async {

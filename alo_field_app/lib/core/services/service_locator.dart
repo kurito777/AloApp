@@ -23,6 +23,7 @@ import '../../features/signature/presentation/bloc/signature_bloc.dart';
 import '../network/dio_client.dart';
 import '../session/session_manager.dart';
 import 'catalog_service.dart';
+import 'otp_service.dart';
 
 final getIt = GetIt.instance;
 
@@ -57,11 +58,14 @@ Future<void> setupLocator() async {
     () => AuthRepository(getIt<AuthService>()),
   );
 
+  getIt.registerLazySingleton<OtpService>(() => OtpService());
+
   getIt.registerFactory<AuthBloc>(
     () => AuthBloc(
       repository: getIt<AuthRepository>(),
       sessionManager: getIt<SessionManager>(),
       sapAuth: getIt<SapAuthService>(),
+      otpService: getIt<OtpService>(),
     ),
   );
 

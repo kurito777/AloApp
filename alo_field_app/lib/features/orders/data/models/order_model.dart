@@ -208,7 +208,14 @@ class OrderModel {
     final rawTasks = json['VID_MTOMTACollection'] as List<dynamic>?;
     if (rawTasks != null) {
       for (final t in rawTasks) {
-        if (t is Map<String, dynamic>) taskList.add(OrderTask.fromJson(t));
+        if (t is! Map<String, dynamic>) continue;
+        final task = OrderTask.fromJson(t);
+        // Oculta líneas vacías: la inicial que trae SAP y las "eliminadas"
+        // (soft-delete deja la línea en blanco; no se puede borrar duro un UDO).
+        if ((task.description?.isNotEmpty ?? false) ||
+            (task.code?.isNotEmpty ?? false)) {
+          taskList.add(task);
+        }
       }
     }
 
