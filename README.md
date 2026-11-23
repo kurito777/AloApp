@@ -1,6 +1,6 @@
 # AloApp
 
-app movil para tecnicos, contralando operacion y trazabilidad de estas.
+app movil para tecnicos en terreno, contralando la operación y trazabilidad.
 
 **Metodología:** Cascada
 
@@ -8,8 +8,8 @@ app movil para tecnicos, contralando operacion y trazabilidad de estas.
 
 | Integrante | Rol |
 |---|---|
-| Kevin Peredo | Análisis, aseguramiento de calidad (QA), documentación de requisitos y pruebas funcionales |
-| Ian Ampuero | Desarrollo y arquitectura |
+| Kevin Peredo | Análisis, Desarrollo, documentación de requisitos y pruebas funcionales |
+| Ian Ampuero | Análisis, Desarrollo, arquitectura, documentación de requisitos y pruebas funcionales |
 
 ## 1. Tecnologías utilizadas
 
