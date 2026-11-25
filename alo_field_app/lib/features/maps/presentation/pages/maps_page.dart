@@ -15,7 +15,7 @@ class MapsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1A1C24),
+        backgroundColor: const Color(0xFF141414),
         title: const Text(
           'Mapa / Ruta',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),

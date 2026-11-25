@@ -88,7 +88,7 @@ class _MaterialPickerPageState extends State<MaterialPickerPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1A1C24),
+        backgroundColor: const Color(0xFF141414),
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text('Buscar material',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
@@ -203,8 +203,8 @@ class _MaterialPickerPageState extends State<MaterialPickerPage> {
             ElevatedButton(
               onPressed: _confirm,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFFCE00),
-                foregroundColor: const Color(0xFF1A1C24),
+                backgroundColor: const Color(0xFFE66A10),
+                foregroundColor: const Color(0xFF141414),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               ),
               child: const Text('Agregar'),

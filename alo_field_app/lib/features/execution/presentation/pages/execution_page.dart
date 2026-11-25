@@ -76,13 +76,13 @@ class _ExecutionPageState extends State<ExecutionPage>
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1A1C24),
+        backgroundColor: const Color(0xFF141414),
         title: const Text('Mis Servicios',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         bottom: TabBar(
           controller: _tab,
-          indicatorColor: const Color(0xFFFFCE00),
-          labelColor: const Color(0xFFFFCE00),
+          indicatorColor: const Color(0xFFE66A10),
+          labelColor: const Color(0xFFE66A10),
           unselectedLabelColor: Colors.white70,
           tabs: const [Tab(text: 'Pendientes'), Tab(text: 'Historial')],
         ),
@@ -185,14 +185,14 @@ class _SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, size: 16, color: const Color(0xFF1A1C24)),
+        Icon(icon, size: 16, color: const Color(0xFF141414)),
         const SizedBox(width: 6),
         Text(
           label,
           style: const TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF1A1C24),
+            color: Color(0xFF141414),
           ),
         ),
       ],
@@ -450,8 +450,8 @@ class _Message extends StatelessWidget {
                 icon: const Icon(Icons.refresh),
                 label: const Text('Reintentar'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFFCE00),
-                  foregroundColor: const Color(0xFF1A1C24),
+                  backgroundColor: const Color(0xFFE66A10),
+                  foregroundColor: const Color(0xFF141414),
                 ),
               ),
             ],

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/config/sap_config.dart';
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/services/service_locator.dart';
 import '../../../../core/session/session_manager.dart';
 import '../../../dashboard/data/repositories/dashboard_repository.dart';
 import '../../data/models/order_model.dart';
+import '../widgets/om_detail_header.dart';
+import '../widgets/om_detail_states.dart';
+import '../widgets/om_dialogs.dart';
+import '../widgets/om_materials_card.dart';
+import '../widgets/om_tasks_card.dart';
 import 'material_picker_page.dart';
 
 /// Detalle de una **Orden de Mantención** con ejecución en terreno.
@@ -148,30 +153,34 @@ class _OmDetailPageState extends State<OmDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final String viewKey = _loading
+        ? 'loading'
+        : _error != null
+            ? 'error'
+            : 'content';
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1A1C24),
+        backgroundColor: AppColors.aloDarkBlue,
+        elevation: 0,
+        scrolledUnderElevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
         title: Text('OM-${widget.docNum}',
             style: const TextStyle(
                 color: Colors.white, fontWeight: FontWeight.bold)),
       ),
-      body: _loading
-          ? const Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation(Color(0xFFFFCE00))),
-                  SizedBox(height: 16),
-                  Text('Cargando OM...', style: TextStyle(color: Colors.grey)),
-                ],
-              ),
-            )
-          : _error != null
-              ? _ErrorBox(message: _error!, onRetry: _load)
-              : _content(_order!),
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 250),
+        child: KeyedSubtree(
+          key: ValueKey<String>(viewKey),
+          child: _loading
+              ? const OmLoadingView()
+              : _error != null
+                  ? OmErrorView(message: _error!, onRetry: _load)
+                  : _content(_order!),
+        ),
+      ),
     );
   }
 
@@ -181,165 +190,33 @@ class _OmDetailPageState extends State<OmDetailPage> {
         ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            _header(o),
+            OmDetailHeader(order: o),
             if (!_editable) ...[
               const SizedBox(height: 12),
-              _readOnlyBanner(o),
+              OmReadOnlyBanner(order: o),
             ],
             const SizedBox(height: 16),
-            _tasksCard(o),
+            OmTasksCard(
+              order: o,
+              editable: _editable,
+              busy: _busy,
+              onAdd: _addTask,
+              onPickEstado: _pickEstado,
+              onDelete: _deleteTask,
+            ),
             const SizedBox(height: 16),
-            _materialsCard(o),
+            OmMaterialsCard(
+              order: o,
+              editable: _editable,
+              busy: _busy,
+              onAdd: _addMaterial,
+              onDelete: _deleteMaterial,
+            ),
             const SizedBox(height: 24),
           ],
         ),
-        if (_busy)
-          const Positioned.fill(
-            child: ColoredBox(
-              color: Color(0x22000000),
-              child: Center(child: CircularProgressIndicator()),
-            ),
-          ),
+        if (_busy) const Positioned.fill(child: OmSavingOverlay()),
       ],
-    );
-  }
-
-  Widget _header(OrderModel o) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(o.clientDisplayName,
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            if (o.equipoDescripcion != null || o.equipoCode != null)
-              _line(Icons.precision_manufacturing_outlined,
-                  o.equipoDescripcion ?? o.equipoCode!),
-            _line(Icons.location_on_outlined, o.fullAddress),
-            if (o.tipoOM != null)
-              _line(Icons.build_outlined, 'Tipo: ${o.tipoOM}'),
-            if (o.descripcionProblema.isNotEmpty)
-              _line(Icons.report_problem_outlined, o.descripcionProblema),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _readOnlyBanner(OrderModel o) {
-    final estado = SapConfig.translateOmState(o.estado) ?? 'Cerrada';
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFF3CD),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFFFE08A)),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.lock_outline, size: 18, color: Color(0xFF8A6D00)),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              'OM $estado — solo lectura. No se puede modificar en SAP.',
-              style: const TextStyle(fontSize: 13, color: Color(0xFF8A6D00)),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _tasksCard(OrderModel o) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.checklist_rtl_outlined,
-                    size: 18, color: Color(0xFF1A1C24)),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Tareas (${o.tasksPending} pend. / ${o.tasksTotal})',
-                    style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                if (_editable)
-                  TextButton.icon(
-                    onPressed: _busy ? null : _addTask,
-                    icon: const Icon(Icons.add, size: 18),
-                    label: const Text('Agregar'),
-                    style: TextButton.styleFrom(
-                        foregroundColor: const Color(0xFF0F6E56)),
-                  ),
-              ],
-            ),
-            if (o.tasks.isEmpty)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                child: Text('La OM no tiene tareas. Agrega la primera.',
-                    style: TextStyle(color: Colors.grey, fontSize: 13)),
-              )
-            else
-              ...o.tasks.map(_taskTile),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _taskTile(OrderTask t) {
-    final est = (t.estado ?? 'N').toUpperCase();
-    final (color, label, icon) = _estadoVisual(est);
-    return InkWell(
-      onTap: (_busy || !_editable) ? null : () => _pickEstado(t),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, size: 20, color: color),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                t.displayName,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: est == 'T' ? Colors.grey : Colors.black87,
-                  decoration: est == 'T' ? TextDecoration.lineThrough : null,
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Text(label,
-                style: TextStyle(
-                    fontSize: 12, color: color, fontWeight: FontWeight.w600)),
-            if (_editable) ...[
-              const Icon(Icons.expand_more, size: 16, color: Colors.grey),
-              IconButton(
-                visualDensity: VisualDensity.compact,
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-                icon: const Icon(Icons.delete_outline,
-                    size: 18, color: Color(0xFFE3000F)),
-                onPressed: _busy ? null : () => _deleteTask(t),
-              ),
-            ],
-          ],
-        ),
-      ),
     );
   }
 
@@ -362,128 +239,12 @@ class _OmDetailPageState extends State<OmDetailPage> {
     );
   }
 
-  Future<bool> _confirm(String msg) async {
-    final r = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        content: Text(msg),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancelar')),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFE3000F),
-                foregroundColor: Colors.white),
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Eliminar'),
-          ),
-        ],
-      ),
-    );
-    return r ?? false;
-  }
+  Future<bool> _confirm(String msg) => showOmConfirmDialog(context, msg);
 
   Future<void> _pickEstado(OrderTask t) async {
     final current = (t.estado ?? 'N').toUpperCase();
-    final estado = await showModalBottomSheet<String>(
-      context: context,
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(16),
-              child: Text('Estado de la tarea',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-            ),
-            for (final e in const [
-              ('N', 'No iniciada'),
-              ('P', 'En proceso'),
-              ('T', 'Terminada'),
-            ])
-              ListTile(
-                leading: Icon(_estadoVisual(e.$1).$3, color: _estadoVisual(e.$1).$1),
-                title: Text(e.$2),
-                trailing: current == e.$1
-                    ? const Icon(Icons.check, color: Color(0xFF00A650))
-                    : null,
-                onTap: () => Navigator.pop(ctx, e.$1),
-              ),
-          ],
-        ),
-      ),
-    );
+    final estado = await showOmEstadoSheet(context: context, current: current);
     if (estado != null && estado != current) _setEstado(t, estado);
-  }
-
-  Widget _materialsCard(OrderModel o) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.inventory_2_outlined,
-                    size: 18, color: Color(0xFF1A1C24)),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text('Materiales (${o.materialCount})',
-                      style: const TextStyle(
-                          fontSize: 15, fontWeight: FontWeight.bold)),
-                ),
-                if (_editable)
-                  TextButton.icon(
-                    onPressed: _busy ? null : _addMaterial,
-                    icon: const Icon(Icons.add, size: 18),
-                    label: const Text('Agregar'),
-                    style: TextButton.styleFrom(
-                        foregroundColor: const Color(0xFF0F6E56)),
-                  ),
-              ],
-            ),
-            if (o.visibleMaterials.isEmpty)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                child: Text('Sin materiales registrados.',
-                    style: TextStyle(color: Colors.grey, fontSize: 13)),
-              )
-            else
-              ...o.visibleMaterials.map((m) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.circle, size: 6, color: Colors.grey),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            m.itemDescription ?? m.itemCode ?? 'Material',
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ),
-                        Text('x${m.quantity?.toStringAsFixed(0) ?? '1'}',
-                            style: const TextStyle(
-                                fontSize: 12, color: Colors.grey)),
-                        if (_editable)
-                          IconButton(
-                            visualDensity: VisualDensity.compact,
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                            icon: const Icon(Icons.delete_outline,
-                                size: 18, color: Color(0xFFE3000F)),
-                            onPressed: _busy ? null : () => _deleteMaterial(m),
-                          ),
-                      ],
-                    ),
-                  )),
-          ],
-        ),
-      ),
-    );
   }
 
   // ── Diálogos ────────────────────────────────────────────────────────────────
@@ -500,103 +261,11 @@ class _OmDetailPageState extends State<OmDetailPage> {
   }
 
   Future<String?> _promptText({required String title, required String hint}) {
-    final ctrl = TextEditingController();
-    return showDialog<String>(
+    return showOmPromptDialog(
       context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setLocal) {
-          final error = _validateText(ctrl.text);
-          return AlertDialog(
-            title: Text(title),
-            content: TextField(
-              controller: ctrl,
-              autofocus: true,
-              maxLines: 2,
-              onChanged: (_) => setLocal(() {}),
-              decoration: InputDecoration(
-                hintText: hint,
-                border: const OutlineInputBorder(),
-                errorText: ctrl.text.isEmpty ? null : error,
-              ),
-            ),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.pop(ctx),
-                  child: const Text('Cancelar')),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFFCE00),
-                    foregroundColor: const Color(0xFF1A1C24)),
-                onPressed:
-                    error != null ? null : () => Navigator.pop(ctx, ctrl.text.trim()),
-                child: const Text('Agregar'),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  // ── Helpers ─────────────────────────────────────────────────────────────────
-
-  (Color, String, IconData) _estadoVisual(String est) {
-    switch (est) {
-      case 'P':
-        return (const Color(0xFF2196F3), 'En proceso', Icons.timelapse);
-      case 'T':
-        return (const Color(0xFF00A650), 'Terminada', Icons.check_circle);
-      default:
-        return (const Color(0xFFFF8C00), 'No iniciada',
-            Icons.radio_button_unchecked);
-    }
-  }
-
-  Widget _line(IconData icon, String text) => Padding(
-        padding: const EdgeInsets.only(top: 4),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, size: 14, color: Colors.grey),
-            const SizedBox(width: 6),
-            Expanded(child: Text(text, style: const TextStyle(fontSize: 13))),
-          ],
-        ),
-      );
-}
-
-class _ErrorBox extends StatelessWidget {
-  final String message;
-  final VoidCallback onRetry;
-
-  const _ErrorBox({required this.message, required this.onRetry});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.cloud_off_outlined,
-                size: 56, color: Color(0xFFE3000F)),
-            const SizedBox(height: 12),
-            Text(message,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.grey)),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: onRetry,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Reintentar'),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFFCE00),
-                  foregroundColor: const Color(0xFF1A1C24)),
-            ),
-          ],
-        ),
-      ),
+      title: title,
+      hint: hint,
+      validate: _validateText,
     );
   }
 }

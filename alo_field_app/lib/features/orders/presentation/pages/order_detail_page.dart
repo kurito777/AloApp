@@ -55,7 +55,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1A1C24),
+        backgroundColor: const Color(0xFF141414),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -132,20 +132,20 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFFCE00),
-                  foregroundColor: const Color(0xFF1A1C24),
+                  backgroundColor: const Color(0xFFE66A10),
+                  foregroundColor: const Color(0xFF141414),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
                 ),
                 icon: const Icon(
                   Icons.play_arrow,
-                  color: Color(0xFF1A1C24),
+                  color: Color(0xFF141414),
                 ),
                 label: const Text(
                   'Iniciar Actividad',
                   style: TextStyle(
-                    color: Color(0xFF1A1C24),
+                    color: Color(0xFF141414),
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -163,14 +163,14 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1A1C24),
+                  backgroundColor: const Color(0xFF141414),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
                 ),
                 icon: const Icon(
                   Icons.camera_alt,
-                  color: Color(0xFFFFCE00),
+                  color: Color(0xFFE66A10),
                 ),
                 label: const Text(
                   'Subir Evidencias',
